@@ -62,9 +62,13 @@
     <button type="button" id="clear-button" class="secondary">Clear</button>
   </form>
 
-  <!-- Chart container hidden until results are available -->
+  <!-- Chart container hidden until results are available.
+       Contains multiple canvases for different charts (e.g., posts by date and posts by platform). -->
   <div id="chart-container" style="display:none;">
-    <canvas id="postsChart"></canvas>
+    <!-- Bar chart of post counts by date -->
+    <canvas id="dateChart"></canvas>
+    <!-- Doughnut chart of post counts by platform -->
+    <canvas id="platformChart"></canvas>
   </div>
 
   <!-- Container for displaying individual post results -->
