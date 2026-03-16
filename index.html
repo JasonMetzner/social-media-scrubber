@@ -4,45 +4,74 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Social Media Scrubber</title>
-  <link rel="stylesheet" href="static/style.css">
+  <!-- Link to the new CSS file for a more colorful theme -->
+  <link rel="stylesheet" href="static/style-new.css">
+  <!-- Include Chart.js from a CDN for rendering charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="container">
   <h1>Social Media Scrubber</h1>
   <form id="search-form">
-    <label for="keywords">Keywords or phrases (separate by comma or new line)</label>
-    <textarea id="keywords" rows="3" placeholder="e.g., climate protest&#10;new regulation"></textarea>
-
-    <div class="platforms">
-      <span>Platforms:</span><br>
-      <label><input type="checkbox" name="platforms" value="X"> X (Twitter)</label><br>
-      <label><input type="checkbox" name="platforms" value="Instagram"> Instagram</label><br>
-      <label><input type="checkbox" name="platforms" value="TikTok"> TikTok</label><br>
-      <label><input type="checkbox" name="platforms" value="YouTube"> YouTube</label>
+    <div class="field-group">
+      <label for="keywords">Keywords or phrases (separate by comma or new line)</label>
+      <textarea id="keywords" rows="3" placeholder="e.g., climate protest&#10;new regulation"></textarea>
     </div>
 
-    <label for="followers">Minimum follower count</label>
-    <input type="number" id="followers" min="0" placeholder="e.g., 1000">
-
-    <div class="mode">
-      <span>Search mode:</span><br>
-      <label><input type="radio" name="mode" value="exact" checked> Exact phrase</label><br>
-      <label><input type="radio" name="mode" value="keyword"> Keyword search</label>
+    <div class="field-group">
+      <label for="platform-select">Platforms</label>
+      <!-- Allow multiple selection of platforms -->
+      <select id="platform-select" multiple>
+        <option value="Twitter">X (Twitter)</option>
+        <option value="Instagram">Instagram</option>
+        <option value="TikTok">TikTok</option>
+        <option value="YouTube">YouTube</option>
+      </select>
     </div>
 
-    <div class="dates">
-      <span>Date range:</span><br>
-      <label>Start: <input type="date" id="start-date"></label><br>
-      <label>End: <input type="date" id="end-date"></label>
+    <div class="field-group">
+      <label for="follower-threshold">Minimum follower count</label>
+      <!-- Provide common follower count thresholds as a dropdown -->
+      <select id="follower-threshold">
+        <option value="0">Any</option>
+        <option value="1000">1,000+</option>
+        <option value="5000">5,000+</option>
+        <option value="10000">10,000+</option>
+        <option value="50000">50,000+</option>
+        <option value="100000">100,000+</option>
+      </select>
     </div>
 
-    <button type="submit" class="primary">Search</button>
-    <button type="button" class="secondary" onclick="document.getElementById('search-form').reset(); document.getElementById('results').innerHTML = '';"><span>Clear</span></button>
+    <div class="field-group">
+      <label for="search-mode">Search mode</label>
+      <select id="search-mode">
+        <option value="exact">Exact phrase</option>
+        <option value="keyword">Keyword search</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label>Date range</label>
+      <div>
+        <label>Start: <input type="date" id="start-date"></label>
+        <label>End: <input type="date" id="end-date"></label>
+      </div>
+    </div>
+
+    <button type="submit" id="search-button" class="primary">Search</button>
+    <button type="button" id="clear-button" class="secondary">Clear</button>
   </form>
 
+  <!-- Chart container hidden until results are available -->
+  <div id="chart-container" style="display:none;">
+    <canvas id="postsChart"></canvas>
+  </div>
+
+  <!-- Container for displaying individual post results -->
   <div id="results"></div>
 </div>
 
-<script src="static/script.js"></script>
+<!-- Client-side application logic -->
+<script src="static/main.js"></script>
 </body>
 </html>
