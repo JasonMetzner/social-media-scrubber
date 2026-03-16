@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     { platform: 'YouTube', author: 'NewsChannel', followersCount: 1000000, content: 'In-depth analysis on new regulation and climate protests', date: '2026-03-11' }
   ];
 
-  let chart; // reference to Chart.js instance
+  let dateChartInstance; // Chart.js instance for date-based chart
+  let platformChartInstance; // Chart.js instance for platform distribution chart
 
   const searchForm = document.getElementById('search-form');
   const resultsContainer = document.getElementById('results');
@@ -33,9 +34,14 @@ document.addEventListener('DOMContentLoaded', function() {
     searchForm.reset();
     resultsContainer.innerHTML = '';
     chartContainer.style.display = 'none';
-    if (chart) {
-      chart.destroy();
-      chart = null;
+    // Destroy existing charts if they exist
+    if (dateChartInstance) {
+      dateChartInstance.destroy();
+      dateChartInstance = null;
+    }
+    if (platformChartInstance) {
+      platformChartInstance.destroy();
+      platformChartInstance = null;
     }
   });
 
@@ -78,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     renderResults(filtered);
-    updateChart(filtered);
+    updateCharts(filtered);
   }
 
   // Render a list of post cards under the results container
@@ -101,33 +107,56 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Generate or update a bar chart showing the number of posts per date
-  function updateChart(posts) {
-    // Destroy any existing chart before creating a new one
-    if (chart) {
-      chart.destroy();
-      chart = null;
+  // Generate or update charts showing posts per date and posts per platform
+  function updateCharts(posts) {
+    // Destroy existing charts before drawing new ones
+    if (dateChartInstance) {
+      dateChartInstance.destroy();
+      dateChartInstance = null;
+    }
+    if (platformChartInstance) {
+      platformChartInstance.destroy();
+      platformChartInstance = null;
     }
     if (!posts.length) {
       chartContainer.style.display = 'none';
       return;
     }
-    // Compute the count of posts per date
-    const counts = {};
+
+    // Compute counts per date
+    const dateCounts = {};
     posts.forEach(post => {
       const date = post.date;
-      counts[date] = (counts[date] || 0) + 1;
+      dateCounts[date] = (dateCounts[date] || 0) + 1;
     });
-    const labels = Object.keys(counts).sort();
-    const data = labels.map(label => counts[label]);
-    const ctx = document.getElementById('postsChart').getContext('2d');
-    chart = new Chart(ctx, {
+    const dateLabels = Object.keys(dateCounts).sort();
+    const dateData = dateLabels.map(label => dateCounts[label]);
+
+    // Compute counts per platform
+    const platformCounts = {};
+    posts.forEach(post => {
+      const platform = post.platform;
+      platformCounts[platform] = (platformCounts[platform] || 0) + 1;
+    });
+    const platformLabels = Object.keys(platformCounts);
+    const platformData = platformLabels.map(label => platformCounts[label]);
+
+    // Colors for platforms chart (use color palette similar to CSS)
+    const platformColors = [
+      'rgba(78, 121, 167, 0.7)',  // Twitter
+      'rgba(242, 142, 43, 0.7)', // Instagram
+      'rgba(142, 186, 229, 0.7)', // TikTok (light blue)
+      'rgba(227, 119, 194, 0.7)'  // YouTube (pink)
+    ];
+
+    const dateCtx = document.getElementById('dateChart').getContext('2d');
+    dateChartInstance = new Chart(dateCtx, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels: dateLabels,
         datasets: [{
-          label: 'Number of Posts',
-          data: data,
+          label: 'Posts by Date',
+          data: dateData,
           backgroundColor: 'rgba(78, 121, 167, 0.5)',
           borderColor: 'rgba(59, 92, 131, 1)',
           borderWidth: 1
@@ -149,6 +178,31 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
     });
+
+    const platformCtx = document.getElementById('platformChart').getContext('2d');
+    platformChartInstance = new Chart(platformCtx, {
+      type: 'doughnut',
+      data: {
+        labels: platformLabels,
+        datasets: [{
+          label: 'Posts by Platform',
+          data: platformData,
+          backgroundColor: platformColors.slice(0, platformLabels.length),
+          borderColor: platformColors.slice(0, platformLabels.length).map(color => color.replace(/0\.7\)/, '1)')),
+          borderWidth: 1
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom'
+          }
+        }
+      }
+    });
+
+    // Show chart container
     chartContainer.style.display = 'block';
   }
 
