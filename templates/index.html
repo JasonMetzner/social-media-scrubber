@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Scrubber</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+  <h1>Social Media Scrubber</h1>
+  <form id="search-form">
+    <label for="keywords">Keywords or phrases (separate by comma or new line)</label>
+    <textarea id="keywords" rows="3" placeholder="e.g., climate protest&#10;new regulation"></textarea>
+
+    <div class="platforms">
+      <span>Platforms:</span><br>
+      <label><input type="checkbox" name="platforms" value="X"> X (Twitter)</label><br>
+      <label><input type="checkbox" name="platforms" value="Instagram"> Instagram</label><br>
+      <label><input type="checkbox" name="platforms" value="TikTok"> TikTok</label><br>
+      <label><input type="checkbox" name="platforms" value="YouTube"> YouTube</label>
+    </div>
+
+    <label for="followers">Minimum follower count</label>
+    <input type="number" id="followers" min="0" placeholder="e.g., 1000">
+
+    <div class="mode">
+      <span>Search mode:</span><br>
+      <label><input type="radio" name="mode" value="exact" checked> Exact phrase</label><br>
+      <label><input type="radio" name="mode" value="keyword"> Keyword search</label>
+    </div>
+
+    <div class="dates">
+      <span>Date range:</span><br>
+      <label>Start: <input type="date" id="start-date"></label><br>
+      <label>End: <input type="date" id="end-date"></label>
+    </div>
+
+    <button type="submit" class="primary">Search</button>
+    <button type="button" class="secondary" onclick="document.getElementById('search-form').reset(); document.getElementById('results').innerHTML = '';"><span>Clear</span></button>
+  </form>
+
+  <div id="results"></div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
