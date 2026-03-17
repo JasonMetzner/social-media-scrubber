@@ -179,16 +179,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const content = post.content.toLowerCase();
         /*
          * Build a list of search tokens from the user‑supplied keywords.  Each keyword may be a
-         * comma‑separated phrase.  We break each phrase into individual words and ignore
-         * very short terms (except "ai") to avoid matching trivial words like "an" or "to".
-         * We intentionally **do not** include the full phrase as a search token because requiring
-         * the entire phrase to match would result in false negatives when words appear
-         * separately within the post.  Instead, the search uses a combination of words to
-         * determine if the post contains any or all of the specified terms.
+         * comma‑separated phrase.  We include the full phrase as well as individual words.  This
+         * allows the scrubber to match posts that contain the entire phrase (e.g., "ai governance")
+         * or any of the constituent words (e.g., "ai" or "governance").  Very short words are
+         * ignored (except "ai") to reduce false positives.
          */
         const tokenSet = new Set();
         keywords.forEach(keyword => {
-          const lowerPhrase = keyword.toLowerCase();
+          const lowerPhrase = keyword.toLowerCase().trim();
+          if (lowerPhrase) {
+            tokenSet.add(lowerPhrase);
+          }
           lowerPhrase.split(/\s+/).forEach(word => {
             const trimmed = word.trim();
             const lw = trimmed.toLowerCase();
@@ -200,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const uniqueTokens = Array.from(tokenSet);
         if (!uniqueTokens.length) return true;
         if (searchMode === 'any') {
-          // At least one token must be present in the content
+          // At least one token (phrase or word) must be present in the content
           return uniqueTokens.some(token => content.includes(token));
         } else {
           // All tokens must be present in the content
