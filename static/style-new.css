@@ -1,62 +1,86 @@
-/* CSS variables for colors */
+/* Dark theme CSS for Social Media Scrubber */
+
 :root {
-  --primary-color: #4e79a7;
-  --primary-border-color: #3b5c83;
-  --secondary-color: #f28e2b;
-  --secondary-border-color: #c37020;
-  --bg-color: #f5f7fa;
-  --card-bg: #ffffff;
-  --card-border: #cfd8dc;
+  /* Background and card colors */
+  --bg-color: #121826;
+  --card-bg: #1F2937;
+  --card-border: #374151;
+  /* Text and link colors */
+  --text-color: #E5E7EB;
+  --link-color: #60A5FA;
+  /* Accent colors (solid and transparent) for various buttons */
+  --primary-color: #3B82F6;
+  --primary-transparent: rgba(59, 130, 246, 0.3);
+  --secondary-color: #EF4444;
+  --secondary-transparent: rgba(239, 68, 68, 0.3);
+  --tertiary-color: #10B981;
+  --tertiary-transparent: rgba(16, 185, 129, 0.3);
+  --accent-color: #FBBF24;
+  --accent-transparent: rgba(251, 191, 36, 0.3);
 }
 
+/* Global resets */
 body {
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background-color: var(--bg-color);
+  color: var(--text-color);
   margin: 0;
-  padding: 20px;
-  color: #333;
+  padding: 0;
 }
 
 .container {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
-}
-
-h1 {
-  text-align: center;
-  color: var(--primary-border-color);
-  margin-bottom: 20px;
-}
-
-form {
-  background-color: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
   padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 4px;
+/* Header/navigation styling */
+header {
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--card-border);
+  padding: 10px 20px;
+  border-radius: 0 0 8px 8px;
 }
 
+header h1 {
+  margin: 0 0 10px;
+  font-size: 1.8rem;
+  color: var(--primary-color);
+}
+
+/* Filter bar layout */
+#filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+#filter-bar > div {
+  flex: 1 1 200px;
+  min-width: 180px;
+}
+
+#filter-bar button,
+#filter-bar select {
+  flex: 0 0 auto;
+}
+
+/* Input and select styling */
 input[type="text"],
 textarea,
 input[type="number"],
 input[type="date"],
 select {
   width: 100%;
-  padding: 10px;
+  padding: 8px 10px;
   margin-top: 4px;
-  margin-bottom: 12px;
   border: 1px solid var(--card-border);
   border-radius: 6px;
   box-sizing: border-box;
-  font-size: 1rem;
-  background-color: #fff;
+  font-size: 0.95rem;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
@@ -66,58 +90,76 @@ input[type="number"]:focus,
 input[type="date"]:focus,
 select:focus {
   outline: none;
-  border-color: var(--primary-border-color);
-  box-shadow: 0 0 3px rgba(78, 121, 167, 0.3);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 4px var(--primary-color);
 }
 
-.field-group {
-  margin-bottom: 16px;
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-color);
 }
 
+/* Base button styles */
 button {
   border-radius: 8px;
   border: 2px solid;
-  padding: 10px 24px;
-  font-size: 1rem;
+  padding: 8px 18px;
+  font-size: 0.9rem;
   cursor: pointer;
-  margin-right: 10px;
-  margin-top: 10px;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  color: var(--text-color);
 }
 
-button.primary {
+/* Button variations */
+button.search {
+  background-color: var(--primary-transparent);
+  border-color: var(--primary-color);
+}
+button.search:hover {
   background-color: var(--primary-color);
-  border-color: var(--primary-border-color);
-  color: #fff;
 }
 
-button.primary:hover {
-  background-color: var(--primary-border-color);
+button.clear {
+  background-color: var(--secondary-transparent);
+  border-color: var(--secondary-color);
 }
-
-button.secondary {
+button.clear:hover {
   background-color: var(--secondary-color);
-  border-color: var(--secondary-border-color);
-  color: #fff;
 }
 
-button.secondary:hover {
-  background-color: var(--secondary-border-color);
+button.save {
+  background-color: var(--accent-transparent);
+  border-color: var(--accent-color);
+}
+button.save:hover {
+  background-color: var(--accent-color);
 }
 
+button.link {
+  background-color: var(--tertiary-transparent);
+  border-color: var(--tertiary-color);
+}
+button.link:hover {
+  background-color: var(--tertiary-color);
+}
+
+/* Post card styles */
 #results .post-card {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .post-platform {
   font-weight: bold;
   color: var(--primary-color);
   margin-bottom: 4px;
+  text-transform: uppercase;
 }
 
 .post-author {
@@ -127,30 +169,66 @@ button.secondary:hover {
 
 .post-content {
   margin-bottom: 8px;
+  line-height: 1.4;
 }
 
 .post-date {
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 0.85rem;
+  color: #94A3B8;
 }
 
+.post-actions {
+  margin-top: 10px;
+}
+
+/* Chart container styles */
 #chart-container {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 8px;
   padding: 20px;
+  margin-top: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-  /* Display chart canvases stacked with spacing. */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Ensure charts fill the available width without overflowing */
 #chart-container canvas {
   width: 100% !important;
   max-width: 100%;
   height: 300px;
+}
+
+/* Saved links page styles */
+.saved-container {
+  padding: 20px;
+}
+
+.saved-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 12px;
+}
+
+.saved-card a {
+  color: var(--link-color);
+  text-decoration: underline;
+}
+
+.nav-links {
+  margin-top: 10px;
+}
+
+.nav-links a {
+  margin-right: 10px;
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
 }
