@@ -19,8 +19,10 @@
           <input type="text" id="keywords" placeholder="AI, AI Governance, Artificial Intelligence, Technology" />
         </div>
         <div>
-          <label for="platform-select">Platforms</label>
-          <select id="platform-select" multiple>
+          <label for="platform-select">Platform</label>
+          <!-- Collapsed platform selector. The first option (empty value) represents all platforms. -->
+          <select id="platform-select">
+            <option value="">All Platforms</option>
             <option value="Twitter">X (Twitter)</option>
             <option value="Instagram">Instagram</option>
             <option value="TikTok">TikTok</option>
@@ -69,13 +71,13 @@
     </form>
   </header>
   <main class="container">
+    <!-- Results area displayed above charts -->
+    <div id="results"></div>
     <!-- Chart area (hidden until results are displayed) -->
     <div id="chart-container" style="display:none;">
       <canvas id="dateChart"></canvas>
       <canvas id="platformChart"></canvas>
     </div>
-    <!-- Results area -->
-    <div id="results"></div>
   </main>
   <!-- Application logic -->
   <script src="static/main.js"></script>
