@@ -123,7 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const keywords = keywordsInput ? keywordsInput.split(/[,\n]+/).map(k => k.trim()).filter(Boolean) : [];
 
     const platformSelect = document.getElementById('platform-select');
-    const selectedPlatforms = Array.from(platformSelect.selectedOptions).map(opt => opt.value);
+    // For the collapsed platform selector, an empty value means "all".  Otherwise treat the selected value as an array.
+    const selectedValue = platformSelect.value;
+    const selectedPlatforms = selectedValue ? [selectedValue] : [];
 
     const followerThreshold = parseInt(document.getElementById('follower-threshold').value, 10) || 0;
 
