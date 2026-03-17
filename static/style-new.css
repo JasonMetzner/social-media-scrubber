@@ -124,6 +124,86 @@ select option {
   color: var(--text-color);
 }
 
+/* -------------------------------------------------------------------------
+ * Custom select component for the platform filter. The native <select> element
+ * is hidden in index.html and replaced by a styled list. This section
+ * defines the appearance of the custom dropdown, including the selected
+ * text area, the arrow indicator and the dropdown list of options.
+ */
+.custom-select {
+  position: relative;
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* Selected element (the visible control) */
+.custom-select .select-selected {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Arrow indicator for the custom select. Rotates when the dropdown is open */
+.custom-select .select-selected::after {
+  content: '';
+  border: 6px solid transparent;
+  /* Softly coloured arrow matching the theme */
+  border-color: #98BAFD transparent transparent transparent;
+  transition: transform 0.2s ease;
+}
+.custom-select .select-selected.open::after {
+  transform: rotate(180deg);
+}
+
+/* Options list container */
+.custom-select .select-items {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  z-index: 10;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+
+/* Show the dropdown when select-hide class is absent */
+.custom-select .select-items:not(.select-hide) {
+  display: block;
+}
+
+/* Individual option styling */
+.custom-select .select-items li {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+/* Hover effect for options */
+.custom-select .select-items li:hover {
+  background-color: var(--primary-transparent);
+}
+
+/* Hide list class utility */
+.select-hide {
+  display: none;
+}
+
 /* Removed duplicate input styling above. */
 
 /* Hover and active states for inputs and selects */
