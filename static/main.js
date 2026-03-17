@@ -83,7 +83,32 @@ document.addEventListener('DOMContentLoaded', function() {
     { platform: 'Twitter', author: 'Journalist', followersCount: 120000, content: 'Breaking: new regulation announced', date: '2026-03-12', url: '' },
     { platform: 'Instagram', author: 'EcoWarrior', followersCount: 3500, content: 'Protest for climate action in LA', date: '2026-03-02', url: '' },
     { platform: 'TikTok', author: 'DanceStar', followersCount: 30000, content: 'Climate protests dance challenge', date: '2026-03-15', url: '' },
-    { platform: 'YouTube', author: 'NewsChannel', followersCount: 1000000, content: 'In-depth analysis on new regulation and climate protests', date: '2026-03-11', url: '' }
+    { platform: 'YouTube', author: 'NewsChannel', followersCount: 1000000, content: 'In-depth analysis on new regulation and climate protests', date: '2026-03-11', url: '' },
+    // Additional posts on varied topics (cow, money, and political funding) for demonstration
+    {
+      platform: 'Instagram',
+      author: 'Green Mobile Vet Services',
+      followersCount: 5500,
+      content: 'FUN FACT: Every cow on earth is a closed CO₂ loop. Herbivores do not create additional CO₂ or methane. Cattle harvest CO₂ from the air via the grass they eat and return it to the soil and sky; there is nothing left over to threaten the planet.',
+      date: '2026-03-16',
+      url: 'https://www.instagram.com/p/DV8zogFFUAE/'
+    },
+    {
+      platform: 'Instagram',
+      author: 'Jeawok Media',
+      followersCount: 10000,
+      content: 'Reports say a “dark money” political group has been contacting social media influencers and offering payments to post negative content about Gen Z candidate Kat Abughazaleh, raising concerns about transparency in political messaging.',
+      date: '2026-03-13',
+      url: 'https://www.instagram.com/reel/DV2FsyFCScL/'
+    },
+    {
+      platform: 'News',
+      author: 'Competition and Consumer Protection Commission',
+      followersCount: 1000,
+      content: 'One in three post‑primary students now learn about money on social media, and one in seven feel uncomfortable asking for help with money questions, according to MABS research presented at a CCPC event during Global Money Week.',
+      date: '2026-03-11',
+      url: 'https://www.ccpc.ie/consumers/2026/03/11/one-in-three-young-people-now-learn-about-money-on-social-media-with-tiktok-most-popular/'
+    }
   ];
 
   let dateChartInstance = null;
