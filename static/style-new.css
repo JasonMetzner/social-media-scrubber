@@ -86,6 +86,29 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  /* Add padding to make room for custom arrow */
+  padding-right: 32px;
+  /* Custom arrow using an inline SVG (purple hue to match accent colours) */
+  background-image: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjOTk5OEJGIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSI2Ij48cGF0aCBkPSJNNS4wMDUgNi4xMDggMC4wNiAwLjU0NGwuODI2Ljc2NiA0LjExNyA0LjEzIDEuMTA4LTAuOTk2IDQuMTA3LTQuMDk3LjgyNi0uNzY2TDUuMDA1IDYuMTA4WiIvPjwvc3ZnPg==");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 8px;
+}
+
+input[type="text"],
+textarea,
+input[type="number"],
+input[type="date"] {
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 0.95rem;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 input[type="text"]:focus,
