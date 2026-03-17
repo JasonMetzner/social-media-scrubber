@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved TikTok Links</title>
+  <link rel="stylesheet" href="static/style-new.css">
+</head>
+<body>
+  <header>
+    <h1>Saved TikTok Links</h1>
+    <div class="nav-links">
+      <a href="index.html">Back to Scrubber</a>
+      <a href="saved-twitter.html">Twitter</a>
+      <a href="saved-instagram.html">Instagram</a>
+      <a href="saved-tiktok.html">TikTok</a>
+      <a href="saved-youtube.html">YouTube</a>
+      <a href="saved-linkedin.html">LinkedIn</a>
+    </div>
+  </header>
+  <main class="container">
+    <div id="saved-results" class="saved-container"></div>
+  </main>
+  <script>
+    const platform = 'tiktok';
+    document.addEventListener('DOMContentLoaded', function() {
+      const saved = JSON.parse(localStorage.getItem('saved_' + platform) || '[]');
+      const container = document.getElementById('saved-results');
+      if (!saved.length) {
+        container.innerHTML = '<p>No saved links.</p>';
+        return;
+      }
+      saved.forEach(post => {
+        const card = document.createElement('div');
+        card.className = 'saved-card';
+        let html = '';
+        html += `<div class="post-platform">${post.platform}</div>`;
+        html += `<div class="post-author">${post.author}${post.followersCount ? ' – ' + post.followersCount.toLocaleString() + ' followers' : ''}</div>`;
+        html += `<div class="post-content">${post.content}</div>`;
+        if (post.url) {
+          html += `<a href="${post.url}" target="_blank">View Source</a>`;
+        }
+        html += `<div class="post-date">${post.date}</div>`;
+        card.innerHTML = html;
+        container.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>
