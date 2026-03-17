@@ -146,12 +146,22 @@ document.addEventListener('DOMContentLoaded', function() {
       // Keyword filter
       if (keywords.length) {
         const content = post.content.toLowerCase();
+        // Flatten phrases into individual words (tokens) so we match any word inside the phrase
+        const tokens = [];
+        keywords.forEach(keyword => {
+          keyword.split(/\s+/).forEach(word => {
+            const trimmed = word.trim().toLowerCase();
+            if (trimmed) tokens.push(trimmed);
+          });
+        });
+        const uniqueTokens = Array.from(new Set(tokens));
+        if (!uniqueTokens.length) return true;
         if (searchMode === 'exact') {
-          // At least one keyword must be present
-          return keywords.some(keyword => content.includes(keyword.toLowerCase()));
+          // At least one token must be present in the content
+          return uniqueTokens.some(token => content.includes(token));
         } else {
-          // All keywords must be present
-          return keywords.every(keyword => content.includes(keyword.toLowerCase()));
+          // All tokens must be present in the content
+          return uniqueTokens.every(token => content.includes(token));
         }
       }
       return true;
