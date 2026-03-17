@@ -94,6 +94,37 @@ document.addEventListener('DOMContentLoaded', function() {
   const chartContainer = document.getElementById('chart-container');
   const clearButton = document.getElementById('clear-button');
 
+  // Initialize custom platform select dropdown
+  const platformWrapper = document.getElementById('platform-select-wrapper');
+  if (platformWrapper) {
+    const selectedDiv = platformWrapper.querySelector('.select-selected');
+    const optionsList = platformWrapper.querySelector('.select-items');
+    const hiddenSelect = document.getElementById('platform-select');
+    // Toggle dropdown when selected area is clicked
+    selectedDiv.addEventListener('click', function(e) {
+      e.stopPropagation();
+      // Close other custom selects if necessary (only one in this page)
+      optionsList.classList.toggle('select-hide');
+      selectedDiv.classList.toggle('open');
+    });
+    // Option click handler
+    optionsList.addEventListener('click', function(e) {
+      const li = e.target.closest('li');
+      if (!li) return;
+      const value = li.getAttribute('data-value');
+      const text = li.textContent;
+      selectedDiv.textContent = text;
+      hiddenSelect.value = value;
+      optionsList.classList.add('select-hide');
+      selectedDiv.classList.remove('open');
+    });
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+      optionsList.classList.add('select-hide');
+      selectedDiv.classList.remove('open');
+    });
+  }
+
   // Form submission triggers search
   searchForm.addEventListener('submit', function(e) {
     e.preventDefault();
