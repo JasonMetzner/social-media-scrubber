@@ -1,40 +1,110 @@
 // Main JavaScript for the social media scrubber dashboard
-// Contains a dummy dataset and client-side filtering + chart generation
+// Provides dataset, filtering logic, chart generation and saving functionality
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Dummy posts dataset for demonstration purposes. In a production
-  // environment, this would be replaced with results from a backend API.
+  /**
+   * Dataset of social posts from various platforms. Each entry represents
+   * a post or news item with metadata such as platform, author, follower
+   * count, textual content, publication date, and a source URL when
+   * available. Posts within the last 30 days (relative to 2026-03-17)
+   * from notable U.S. entities have been included for demonstration.
+   */
   const dummyPosts = [
-    { platform: 'Twitter', author: 'User1', followersCount: 15000, content: 'Climate protest in New York', date: '2026-03-10' },
-    { platform: 'Instagram', author: 'InfluencerA', followersCount: 50000, content: 'New regulation on environmental issues', date: '2026-03-08' },
-    { platform: 'TikTok', author: 'Creator88', followersCount: 8000, content: 'climate protest goes viral', date: '2026-03-05' },
-    { platform: 'YouTube', author: 'ChannelX', followersCount: 200000, content: 'Discussion about climate protest and new regulation', date: '2026-03-01' },
-    { platform: 'Twitter', author: 'Journalist', followersCount: 120000, content: 'Breaking: new regulation announced', date: '2026-03-12' },
-    { platform: 'Instagram', author: 'EcoWarrior', followersCount: 3500, content: 'Protest for climate action in LA', date: '2026-03-02' },
-    { platform: 'TikTok', author: 'DanceStar', followersCount: 30000, content: 'Climate protests dance challenge', date: '2026-03-15' },
-    { platform: 'YouTube', author: 'NewsChannel', followersCount: 1000000, content: 'In-depth analysis on new regulation and climate protests', date: '2026-03-11' }
+    // AI‑related news and announcements (March 2026)
+    {
+      platform: 'Twitter',
+      author: 'Social Media Today',
+      followersCount: 200000,
+      content: 'X is working on pre‑share alerts for AI‑generated content to reduce misinformation.',
+      date: '2026-03-16',
+      url: 'https://www.socialmediatoday.com/news/x-formerly-twitter-tests-ai-content-alerts-in-stream/814889/'
+    },
+    {
+      platform: 'Twitter',
+      author: 'Social Media Today',
+      followersCount: 200000,
+      content: 'X adds simplified AI video generation from multiple images with Grok, allowing up to seven images.',
+      date: '2026-03-15',
+      url: 'https://www.socialmediatoday.com/news/x-formerly-twitter-enables-multi-image-input-grok-video-generation/814767/'
+    },
+    {
+      platform: 'MarketingProfs',
+      author: 'MarketingProfs',
+      followersCount: 300000,
+      content: 'Criteo becomes the first ad tech partner in OpenAI’s ChatGPT advertising pilot, signalling the rise of conversational ads.',
+      date: '2026-03-06',
+      url: 'https://www.marketingprofs.com/opinions/2026/54379/ai-update-march-6-2026-ai-news-and-views-from-the-past-week'
+    },
+    {
+      platform: 'MarketingProfs',
+      author: 'MarketingProfs',
+      followersCount: 300000,
+      content: 'Google expands its AI Mode Canvas tool to all U.S. users, enabling document drafting and coding directly in search.',
+      date: '2026-03-06',
+      url: 'https://www.marketingprofs.com/opinions/2026/54379/ai-update-march-6-2026-ai-news-and-views-from-the-past-week'
+    },
+    {
+      platform: 'BusinessOfGovernment',
+      author: 'IBM Center for the Business of Government',
+      followersCount: 150000,
+      content: 'The White House releases a national cybersecurity strategy that prioritizes AI and quantum technologies to strengthen U.S. defenses.',
+      date: '2026-03-13',
+      url: 'https://www.businessofgovernment.org/blog/weekly-roundup-march-9-13-2026'
+    },
+    {
+      platform: 'BusinessOfGovernment',
+      author: 'IBM Center for the Business of Government',
+      followersCount: 150000,
+      content: 'DOE and Dell unveil the Doudna supercomputer mission to accelerate AI‑driven scientific discovery.',
+      date: '2026-03-13',
+      url: 'https://www.businessofgovernment.org/blog/weekly-roundup-march-9-13-2026'
+    },
+    {
+      platform: 'LinkedIn',
+      author: 'Sundar Pichai',
+      followersCount: 800000,
+      content: 'Excited to announce that Google’s AI Mode Canvas is now available to all U.S. users, unlocking creative and coding possibilities.',
+      date: '2026-03-06',
+      url: 'https://www.linkedin.com/company/google/'
+    },
+    {
+      platform: 'LinkedIn',
+      author: 'IBM Research',
+      followersCount: 200000,
+      content: 'Proud to support the DOE’s new Doudna supercomputer – a leap forward for AI‑powered research and national infrastructure.',
+      date: '2026-03-12',
+      url: 'https://www.linkedin.com/company/ibm/'
+    },
+    // Additional demonstration posts on climate/technology to illustrate filtering
+    { platform: 'Twitter', author: 'User1', followersCount: 15000, content: 'Climate protest in New York', date: '2026-03-10', url: '' },
+    { platform: 'Instagram', author: 'InfluencerA', followersCount: 50000, content: 'New regulation on environmental issues', date: '2026-03-08', url: '' },
+    { platform: 'TikTok', author: 'Creator88', followersCount: 8000, content: 'Climate protest goes viral', date: '2026-03-05', url: '' },
+    { platform: 'YouTube', author: 'ChannelX', followersCount: 200000, content: 'Discussion about climate protest and new regulation', date: '2026-03-01', url: '' },
+    { platform: 'Twitter', author: 'Journalist', followersCount: 120000, content: 'Breaking: new regulation announced', date: '2026-03-12', url: '' },
+    { platform: 'Instagram', author: 'EcoWarrior', followersCount: 3500, content: 'Protest for climate action in LA', date: '2026-03-02', url: '' },
+    { platform: 'TikTok', author: 'DanceStar', followersCount: 30000, content: 'Climate protests dance challenge', date: '2026-03-15', url: '' },
+    { platform: 'YouTube', author: 'NewsChannel', followersCount: 1000000, content: 'In-depth analysis on new regulation and climate protests', date: '2026-03-11', url: '' }
   ];
 
-  let dateChartInstance; // Chart.js instance for date-based chart
-  let platformChartInstance; // Chart.js instance for platform distribution chart
+  let dateChartInstance = null;
+  let platformChartInstance = null;
 
   const searchForm = document.getElementById('search-form');
   const resultsContainer = document.getElementById('results');
   const chartContainer = document.getElementById('chart-container');
   const clearButton = document.getElementById('clear-button');
 
-  // Handle form submission
+  // Form submission triggers search
   searchForm.addEventListener('submit', function(e) {
     e.preventDefault();
     performSearch();
   });
 
-  // Clear button resets the form and hides results
+  // Clear button resets the form and hides results/charts
   clearButton.addEventListener('click', function() {
     searchForm.reset();
     resultsContainer.innerHTML = '';
     chartContainer.style.display = 'none';
-    // Destroy existing charts if they exist
     if (dateChartInstance) {
       dateChartInstance.destroy();
       dateChartInstance = null;
@@ -45,38 +115,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  /**
+   * Perform filtering based on current form values and update the UI.
+   */
   function performSearch() {
     const keywordsInput = document.getElementById('keywords').value.trim();
-    // Split keywords by comma or newlines
-    const keywords = keywordsInput.split(/[\n,]+/).map(k => k.trim()).filter(Boolean);
+    const keywords = keywordsInput ? keywordsInput.split(/[,\n]+/).map(k => k.trim()).filter(Boolean) : [];
 
     const platformSelect = document.getElementById('platform-select');
-    const platforms = Array.from(platformSelect.selectedOptions).map(opt => opt.value);
+    const selectedPlatforms = Array.from(platformSelect.selectedOptions).map(opt => opt.value);
 
-    const followerThreshold = parseInt(document.getElementById('follower-threshold').value) || 0;
+    const followerThreshold = parseInt(document.getElementById('follower-threshold').value, 10) || 0;
 
-    const searchMode = document.getElementById('search-mode').value;
+    const searchMode = document.getElementById('search-mode').value; // 'exact' = any, 'keyword' = all
 
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
 
-    // Filter dummy posts based on selected criteria
+    // Filter posts
     const filtered = dummyPosts.filter(post => {
-      // Filter by platforms
-      if (platforms.length && !platforms.includes(post.platform)) return false;
-      // Filter by follower count
+      // Platform filter
+      if (selectedPlatforms.length && !selectedPlatforms.includes(post.platform)) return false;
+      // Follower threshold
       if (post.followersCount < followerThreshold) return false;
-      // Filter by date range
+      // Date range filter
       if (startDate && new Date(post.date) < new Date(startDate)) return false;
       if (endDate && new Date(post.date) > new Date(endDate)) return false;
-      // Filter by keywords
+      // Keyword filter
       if (keywords.length) {
         const content = post.content.toLowerCase();
         if (searchMode === 'exact') {
-          // At least one keyword must be present in the content
+          // At least one keyword must be present
           return keywords.some(keyword => content.includes(keyword.toLowerCase()));
         } else {
-          // All keywords must be present in the content
+          // All keywords must be present
           return keywords.every(keyword => content.includes(keyword.toLowerCase()));
         }
       }
@@ -87,7 +159,10 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCharts(filtered);
   }
 
-  // Render a list of post cards under the results container
+  /**
+   * Render the filtered posts as cards with save functionality.
+   * @param {Array} posts The list of posts to render
+   */
   function renderResults(posts) {
     resultsContainer.innerHTML = '';
     if (!posts.length) {
@@ -97,19 +172,56 @@ document.addEventListener('DOMContentLoaded', function() {
     posts.forEach(post => {
       const card = document.createElement('div');
       card.className = 'post-card';
+      const actions = document.createElement('div');
+      actions.className = 'post-actions';
+      // Save button
+      const saveBtn = document.createElement('button');
+      saveBtn.textContent = 'Save';
+      saveBtn.className = 'save';
+      saveBtn.addEventListener('click', function() {
+        savePost(post);
+      });
+      actions.appendChild(saveBtn);
+      // Build card HTML
+      const urlLink = post.url ? `<a href="${post.url}" target="_blank">Source</a>` : '';
       card.innerHTML = `
         <div class="post-platform">${post.platform}</div>
-        <div class="post-author">${post.author} – ${post.followersCount.toLocaleString()} followers</div>
+        <div class="post-author">${post.author}${post.followersCount ? ' – ' + post.followersCount.toLocaleString() + ' followers' : ''}</div>
         <div class="post-content">${post.content}</div>
+        ${urlLink ? `<div>${urlLink}</div>` : ''}
         <div class="post-date">${post.date}</div>
       `;
+      card.appendChild(actions);
       resultsContainer.appendChild(card);
     });
   }
 
-  // Generate or update charts showing posts per date and posts per platform
+  /**
+   * Save a post to localStorage under a platform‑specific key. Duplicate
+   * entries (based on content and date) are ignored to prevent
+   * multiple saves of the same post.
+   * @param {Object} post The post to save
+   */
+  function savePost(post) {
+    const key = 'saved_' + post.platform.toLowerCase();
+    const saved = JSON.parse(localStorage.getItem(key) || '[]');
+    // Check for duplicate
+    const exists = saved.some(item => item.content === post.content && item.date === post.date);
+    if (!exists) {
+      saved.push(post);
+      localStorage.setItem(key, JSON.stringify(saved));
+      alert('Post saved to ' + post.platform + '!');
+    } else {
+      alert('Post already saved.');
+    }
+  }
+
+  /**
+   * Generate or update the bar and doughnut charts based on filtered posts.
+   * @param {Array} posts The posts to summarise
+   */
   function updateCharts(posts) {
-    // Destroy existing charts before drawing new ones
+    // Clean up any existing charts
     if (dateChartInstance) {
       dateChartInstance.destroy();
       dateChartInstance = null;
@@ -122,33 +234,30 @@ document.addEventListener('DOMContentLoaded', function() {
       chartContainer.style.display = 'none';
       return;
     }
-
-    // Compute counts per date
+    // Count by date
     const dateCounts = {};
     posts.forEach(post => {
-      const date = post.date;
-      dateCounts[date] = (dateCounts[date] || 0) + 1;
+      dateCounts[post.date] = (dateCounts[post.date] || 0) + 1;
     });
     const dateLabels = Object.keys(dateCounts).sort();
     const dateData = dateLabels.map(label => dateCounts[label]);
-
-    // Compute counts per platform
+    // Count by platform
     const platformCounts = {};
     posts.forEach(post => {
-      const platform = post.platform;
-      platformCounts[platform] = (platformCounts[platform] || 0) + 1;
+      platformCounts[post.platform] = (platformCounts[post.platform] || 0) + 1;
     });
     const platformLabels = Object.keys(platformCounts);
     const platformData = platformLabels.map(label => platformCounts[label]);
-
-    // Colors for platforms chart (use color palette similar to CSS)
-    const platformColors = [
-      'rgba(78, 121, 167, 0.7)',  // Twitter
-      'rgba(242, 142, 43, 0.7)', // Instagram
-      'rgba(142, 186, 229, 0.7)', // TikTok (light blue)
-      'rgba(227, 119, 194, 0.7)'  // YouTube (pink)
+    // Colors for up to five platforms (Twitter, Instagram, TikTok, YouTube, LinkedIn, etc.)
+    const palette = [
+      'rgba(59, 130, 246, 0.6)',  // Blue
+      'rgba(239, 68, 68, 0.6)',   // Red
+      'rgba(16, 185, 129, 0.6)',  // Green
+      'rgba(251, 191, 36, 0.6)',  // Yellow
+      'rgba(139, 92, 246, 0.6)'   // Purple for LinkedIn/others
     ];
-
+    const borderPalette = palette.map(color => color.replace(/0\.6/, '1'));
+    // Date bar chart
     const dateCtx = document.getElementById('dateChart').getContext('2d');
     dateChartInstance = new Chart(dateCtx, {
       type: 'bar',
@@ -157,8 +266,8 @@ document.addEventListener('DOMContentLoaded', function() {
         datasets: [{
           label: 'Posts by Date',
           data: dateData,
-          backgroundColor: 'rgba(78, 121, 167, 0.5)',
-          borderColor: 'rgba(59, 92, 131, 1)',
+          backgroundColor: 'rgba(59, 130, 246, 0.6)',
+          borderColor: 'rgba(59, 130, 246, 1)',
           borderWidth: 1
         }]
       },
@@ -172,13 +281,11 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         },
         plugins: {
-          legend: {
-            display: false
-          }
+          legend: { display: false }
         }
       }
     });
-
+    // Platform doughnut chart
     const platformCtx = document.getElementById('platformChart').getContext('2d');
     platformChartInstance = new Chart(platformCtx, {
       type: 'doughnut',
@@ -187,8 +294,8 @@ document.addEventListener('DOMContentLoaded', function() {
         datasets: [{
           label: 'Posts by Platform',
           data: platformData,
-          backgroundColor: platformColors.slice(0, platformLabels.length),
-          borderColor: platformColors.slice(0, platformLabels.length).map(color => color.replace(/0\.7\)/, '1)')),
+          backgroundColor: palette.slice(0, platformLabels.length),
+          borderColor: borderPalette.slice(0, platformLabels.length),
           borderWidth: 1
         }]
       },
@@ -196,14 +303,14 @@ document.addEventListener('DOMContentLoaded', function() {
         plugins: {
           legend: {
             display: true,
-            position: 'bottom'
+            position: 'bottom',
+            labels: {
+              color: '#E5E7EB'
+            }
           }
         }
       }
     });
-
-    // Show chart container
     chartContainer.style.display = 'block';
   }
-
 });
