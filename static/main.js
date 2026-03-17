@@ -149,9 +149,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Flatten phrases into individual words (tokens) so we match any word inside the phrase
         const tokens = [];
         keywords.forEach(keyword => {
+          // Split each phrase into individual tokens. Filter out very short
+          // tokens (length <= 2) except for "ai", to avoid matching common
+          // stop words like "and" that appear in many posts.
           keyword.split(/\s+/).forEach(word => {
             const trimmed = word.trim().toLowerCase();
-            if (trimmed) tokens.push(trimmed);
+            // Keep tokens longer than two characters or exactly 'ai'
+            if (trimmed && (trimmed.length > 2 || trimmed === 'ai')) {
+              tokens.push(trimmed);
+            }
           });
         });
         const uniqueTokens = Array.from(new Set(tokens));
