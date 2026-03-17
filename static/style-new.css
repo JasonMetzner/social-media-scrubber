@@ -98,11 +98,8 @@ select {
   /* Use the same card background for consistency */
   background-color: var(--card-bg);
   color: var(--text-color);
-  /* Improve stacking context so the dropdown appears above other elements */
-  position: relative;
-  z-index: 1;
-  /* Transition for interactive feedback */
-  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  /* Provide interactive transitions without affecting layering */
+  transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out;
   /* Remove native arrows so we can add our own */
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -114,8 +111,8 @@ select {
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 14px 8px;
-  /* Shadows for depth */
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2);
+  /* Subtle shadow for depth without dark overlay */
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25), 0 1px 1px rgba(0, 0, 0, 0.15);
 }
 
 /* Ensure dropdown options inherit dark background and light text */
