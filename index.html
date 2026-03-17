@@ -20,21 +20,8 @@
         </div>
         <div>
           <label for="platform-select">Platform</label>
-          <!-- Custom dropdown for platform selection.  The visible component is a div with a list of options,
-               while a hidden select is kept in sync for form logic. The first option (empty value) represents
-               “All Platforms”. -->
-          <div class="custom-select" id="platform-select-wrapper">
-            <div class="select-selected">All Platforms</div>
-            <ul class="select-items select-hide">
-              <li data-value="">All Platforms</li>
-              <li data-value="Twitter">X (Twitter)</li>
-              <li data-value="Instagram">Instagram</li>
-              <li data-value="TikTok">TikTok</li>
-              <li data-value="YouTube">YouTube</li>
-              <li data-value="LinkedIn">LinkedIn</li>
-            </ul>
-          </div>
-          <select id="platform-select" style="display:none;">
+          <!-- Platform dropdown. An empty value represents "All Platforms" and collapses the list -->
+          <select id="platform-select">
             <option value="">All Platforms</option>
             <option value="Twitter">X (Twitter)</option>
             <option value="Instagram">Instagram</option>
