@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const followerThreshold = parseInt(document.getElementById('follower-threshold').value, 10) || 0;
 
-    const searchMode = document.getElementById('search-mode').value; // 'exact' = any, 'keyword' = all
+    const searchMode = document.getElementById('search-mode').value; // 'any' = contains any token, 'all' = contains all tokens
 
     const startDate = document.getElementById('start-date').value;
     const endDate = document.getElementById('end-date').value;
@@ -146,23 +146,29 @@ document.addEventListener('DOMContentLoaded', function() {
       // Keyword filter
       if (keywords.length) {
         const content = post.content.toLowerCase();
-        // Flatten phrases into individual words (tokens) so we match any word inside the phrase
-        const tokens = [];
+        /*
+         * Build a list of search tokens from the user‑supplied keywords.  Each keyword may be a
+         * comma‑separated phrase.  We break each phrase into individual words and ignore
+         * very short terms (except "ai") to avoid matching trivial words like "an" or "to".
+         * We intentionally **do not** include the full phrase as a search token because requiring
+         * the entire phrase to match would result in false negatives when words appear
+         * separately within the post.  Instead, the search uses a combination of words to
+         * determine if the post contains any or all of the specified terms.
+         */
+        const tokenSet = new Set();
         keywords.forEach(keyword => {
-          // Split each phrase into individual tokens. Filter out very short
-          // tokens (length <= 2) except for "ai", to avoid matching common
-          // stop words like "and" that appear in many posts.
-          keyword.split(/\s+/).forEach(word => {
-            const trimmed = word.trim().toLowerCase();
-            // Keep tokens longer than two characters or exactly 'ai'
-            if (trimmed && (trimmed.length > 2 || trimmed === 'ai')) {
-              tokens.push(trimmed);
+          const lowerPhrase = keyword.toLowerCase();
+          lowerPhrase.split(/\s+/).forEach(word => {
+            const trimmed = word.trim();
+            const lw = trimmed.toLowerCase();
+            if (lw && (lw.length > 2 || lw === 'ai')) {
+              tokenSet.add(lw);
             }
           });
         });
-        const uniqueTokens = Array.from(new Set(tokens));
+        const uniqueTokens = Array.from(tokenSet);
         if (!uniqueTokens.length) return true;
-        if (searchMode === 'exact') {
+        if (searchMode === 'any') {
           // At least one token must be present in the content
           return uniqueTokens.some(token => content.includes(token));
         } else {
