@@ -151,9 +151,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Form submission triggers search
-  searchForm.addEventListener('submit', function(e) {
+  searchForm.addEventListener('submit', async function(e) {
     e.preventDefault();
-    performSearch();
+    await performSearch();
   });
 
   // Clear button resets the form and hides results/charts
@@ -174,23 +174,47 @@ document.addEventListener('DOMContentLoaded', function() {
   /**
    * Perform filtering based on current form values and update the UI.
    */
-  function performSearch() {
+  async function performSearch() {
+    // Collect search parameters from form
     const keywordsInput = document.getElementById('keywords').value.trim();
-    const keywords = keywordsInput ? keywordsInput.split(/[,\n]+/).map(k => k.trim()).filter(Boolean) : [];
-
+    const keywords = keywordsInput
+      ? keywordsInput.split(/[\n,]+/).map(k => k.trim()).filter(Boolean)
+      : [];
     const platformSelect = document.getElementById('platform-select');
-    // For the collapsed platform selector, an empty value means "all".  Otherwise treat the selected value as an array.
     const selectedValue = platformSelect.value;
     const selectedPlatforms = selectedValue ? [selectedValue] : [];
-
     const followerThreshold = parseInt(document.getElementById('follower-threshold').value, 10) || 0;
-
-    const searchMode = document.getElementById('search-mode').value; // 'any' = contains any token, 'all' = contains all tokens
-
-    const startDate = document.getElementById('start-date').value;
-    const endDate = document.getElementById('end-date').value;
-
-    // Filter posts
+    const searchMode = document.getElementById('search-mode').value;
+    const startDate = document.getElementById('start-date').value || null;
+    const endDate = document.getElementById('end-date').value || null;
+    // Build payload for API
+    const payload = {
+      keywords,
+      followerThreshold,
+      platforms: selectedPlatforms,
+      searchMode,
+      startDate,
+      endDate
+    };
+    try {
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error('API request failed');
+      const data = await response.json();
+      // Support both array and {posts: []} shapes
+      const posts = Array.isArray(data) ? data : data.posts || [];
+      if (posts.length) {
+        renderResults(posts);
+        updateCharts(posts);
+        return;
+      }
+    } catch (error) {
+      console.error('Error fetching from API:', error);
+    }
+    // Fallback to local filtering of dummy posts if API fails or returns no posts
     const filtered = dummyPosts.filter(post => {
       // Platform filter
       if (selectedPlatforms.length && !selectedPlatforms.includes(post.platform)) return false;
@@ -202,40 +226,25 @@ document.addEventListener('DOMContentLoaded', function() {
       // Keyword filter
       if (keywords.length) {
         const content = post.content.toLowerCase();
-        /*
-         * Build a list of search tokens from the user‑supplied keywords.  Each keyword may be a
-         * comma‑separated phrase.  We include the full phrase as well as individual words.  This
-         * allows the scrubber to match posts that contain the entire phrase (e.g., "ai governance")
-         * or any of the constituent words (e.g., "ai" or "governance").  Very short words are
-         * ignored (except "ai") to reduce false positives.
-         */
         const tokenSet = new Set();
         keywords.forEach(keyword => {
           const lowerPhrase = keyword.toLowerCase().trim();
-          if (lowerPhrase) {
-            tokenSet.add(lowerPhrase);
-          }
+          if (lowerPhrase) tokenSet.add(lowerPhrase);
           lowerPhrase.split(/\s+/).forEach(word => {
-            const trimmed = word.trim();
-            const lw = trimmed.toLowerCase();
-            if (lw && (lw.length > 2 || lw === 'ai')) {
-              tokenSet.add(lw);
-            }
+            const lw = word.toLowerCase();
+            if (lw && (lw.length > 2 || lw === 'ai')) tokenSet.add(lw);
           });
         });
-        const uniqueTokens = Array.from(tokenSet);
-        if (!uniqueTokens.length) return true;
+        const tokens = Array.from(tokenSet);
+        if (!tokens.length) return true;
         if (searchMode === 'any') {
-          // At least one token (phrase or word) must be present in the content
-          return uniqueTokens.some(token => content.includes(token));
+          return tokens.some(token => content.includes(token));
         } else {
-          // All tokens must be present in the content
-          return uniqueTokens.every(token => content.includes(token));
+          return tokens.every(token => content.includes(token));
         }
       }
       return true;
     });
-
     renderResults(filtered);
     updateCharts(filtered);
   }
